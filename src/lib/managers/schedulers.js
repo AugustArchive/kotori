@@ -1,8 +1,8 @@
 const { readdir } = require('fs');
 const { EventEmitter } = require('events');
 const SchedulerProcessor = require('../processors/schedulers');
-const Scheduler = require('../interfaces/scheduler');
 const { Collection } = require('@maika.xyz/eris-utils');
+const Scheduler = require('../interfaces/scheduler');
 
 module.exports = class SchedulerManager extends EventEmitter {
     /**
@@ -29,9 +29,6 @@ module.exports = class SchedulerManager extends EventEmitter {
 
             files.forEach(f => {
                 const scheduler = require(`${this.client.paths.schedulers}/${f}`);
-
-                if (!(scheduler instanceof Scheduler))
-                    throw new RangeError('Scheduler given wasn\'t an instanceof Kotori.Scheduler');
 
                 const s = new scheduler(this.client);
                 this.registerScheduler(s);

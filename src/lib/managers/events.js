@@ -1,6 +1,5 @@
 const { readdir } = require('fs');
 const EventProcessor = require('../processors/events');
-const Event = require('../interfaces/event');
 
 module.exports = class EventManager {
     /**
@@ -20,9 +19,6 @@ module.exports = class EventManager {
 
             files.forEach(f => {
                 const event = require(`${this.client.paths.events}/${f}`);
-                if (!(event instanceof Event))
-                    throw new RangeError("Event wasn't an instanceof Kotori.Event");
-
                 const e = new event(this.client);
                 this.processor.process(e);
             });

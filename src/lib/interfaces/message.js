@@ -6,12 +6,12 @@ module.exports = class CommandMessage {
      * 
      * @param {import('../client')} client The client
      * @param {import('eris').Message} message The message
-     * @param {import('./command')} command The command
+     * @param {string[]} args The arguments
      */
-    constructor(client, message, command) {
+    constructor(client, message, args) {
         this.client = client;
         this.message = message;
-        this.command = command;
+        this.args = args;
     }
 
     /**
@@ -39,15 +39,6 @@ module.exports = class CommandMessage {
      */
     get sender() {
         return this.message.author;
-    }
-
-    /**
-     * Provide usage for a command
-     * 
-     * @returns {string}
-     */
-    usage() {
-        return `${this.client.prefix}${this.command.command}${this.command.format ? ` ${this.command.format}` : ''}`;
     }
 
     /**

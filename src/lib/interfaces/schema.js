@@ -22,15 +22,15 @@ module.exports = class ISchema {
     }
 
     /**
-     * Create a new Schema for chaining I guess?
+     * Create a new Schema to add something
      * 
      * @param {any} obj The object to add to the schema
-     * @returns {ISchema} This instance for chaining?
+     * @returns {Schema} The schema
      */
     create(obj) {
         const s = new this.instance(obj);
         s.save();
-        return this;
+        return s;
     }
 };
 

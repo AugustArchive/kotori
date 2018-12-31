@@ -99,9 +99,10 @@ module.exports = class DatabaseFactory extends EventEmitter {
 
             files.forEach(f => {
                 const Schema = require(`${this.client.paths.schemas}/${f}`);
-                this.schemas.set(Schema.name, Schema);
+                const schema = new Schema();
+                this.schemas.set(schema.name, schema);
                 // Adds the schema to the mongoose collection
-                Schema.add();
+                schema.add();
                 this.emit('database:schemaRegistered', Schema);
             });
         });

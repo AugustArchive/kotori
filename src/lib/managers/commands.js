@@ -19,11 +19,6 @@ module.exports = class CommandManager extends EventEmitter {
          * @type {Collection<string, Command>}
          */
         this.commands = new Collection();
-
-        /**
-         * @type {Collection<string, import('../interfaces/type')>}
-         */
-        this.types = new Collection();
     }
 
     async registerCommands() {
@@ -36,35 +31,13 @@ module.exports = class CommandManager extends EventEmitter {
                 files.forEach(f => {
                     try {
                         const command = require(`${this.client.paths.commands}/${categories[i]}/${f}`);
-                        if (!(command instanceof Command))
-                            throw new SyntaxError("Command wasn't an instanceof Kotori.Command");
-
                         const c = new command(this.client);
-                        this.registerCommand(command);
+                        this.registerCommand(c);
                     } catch(ex) {
                         this.emit('command:error', ex);
                     }
                 });
             });
-    }
-
-    /**
-     * Registers all "default" types
-     */
-    registerDefaultTypes() {
-        readdir('./types', (error, files) => {
-            if (error)
-                this.emit('types:error', error);
-
-            files.forEach(f => {
-                const Type = require(`../types/${f}`);
-                const type = new Type(this.client);
-
-                this.registerType(type);
-            });
-        });
-
-        return this;
     }
 
     /**
@@ -81,19 +54,5 @@ module.exports = class CommandManager extends EventEmitter {
 
         this.commands.set(cmd.command, cmd);
         this.emit('command:registered', cmd);
-    }
-
-    /**
-     * Registers an argument type
-     * 
-     * @param {import('../interfaces/type')} type The argument type to register
-     * @returns {void} nOOp
-     */
-    registerType(type) {
-        if (this.types.has(type.id))
-            this.emit('argtype:register:error', `Argument Type "${type.id}" wasn't able to be registered: Argument Type is already registered.`);
-
-        this.types.set(type.id, type);
-        this.emit('argtype:register:error');
     }
 };

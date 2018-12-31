@@ -1,4 +1,4 @@
-# `@maika.xyz/kotori`
+# @maika.xyz/kotori <img src="https://augu.me/files/uxwa2k.png" width="400px" height="449px">
 
 > :heart: **The core component of Maika**
 

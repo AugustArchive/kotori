@@ -1,5 +1,3 @@
-const ArgumentCollector = require('./collectors/argument');
-
 module.exports = class Command {
     /**
      * The command interface
@@ -20,26 +18,16 @@ module.exports = class Command {
             nsfw: false,
             enabled: true
         };
-        this.argsCollector = info.args && info.args.length ? new ArgumentCollector(client, info.args) : null;
-        if (this.argsCollector)
-            this.format = this.argsCollector.args.reduce((prev, curr) => {
-                const wrap = {
-                    left: curr.default !== null ? '[' : '<',
-                    right: curr.default !== null ? ']' : '<'
-                };
-                return `${prev}${prev ? ' ' : ''}${wrap.left}${curr.label}${curr.infinite ? '...' : ''}${wrap.right}`;
-            }, '');
     }
 
     /**
      * Run the command
      * 
      * @param {import('./message')} msg The command message
-     * @param {Object|string|string[]} args The arguments
      * @returns {Promise<void>} The promised command
      */
-    async run(msg, args) {
-        throw new SyntaxError(`Command "${this.constructor.name}" doesn't have a run(msg: Kotori.CommandMessage, args: Object | string | string[]) function avaliable.`);
+    async run(msg) {
+        throw new SyntaxError(`Command "${this.constructor.name}" doesn't have a run(msg: Kotori.CommandMessage) function avaliable.`);
     }
 };
 
@@ -50,7 +38,6 @@ module.exports = class Command {
  * @prop {string} [category] The command category
  * @prop {string[]} [aliases=[]] The command aliases
  * @prop {ICommandChecks} [checks] The command checks
- * @prop {import('./argument')[]} [args] The arguments
  */
 
 /**

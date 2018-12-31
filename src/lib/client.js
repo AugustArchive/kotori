@@ -29,15 +29,14 @@ module.exports = class Client extends DiscordClient {
         };
         this.rest = new RESTClient(this);
         this.owners = options.owners;
+        this.prefix = options.prefix || '!';
 
         this.once('ready', () => (this.schedulers ? this.schedulers.tasks.forEach(s => this.schedulers.processor.process(s)) : null));
         this.on('messageCreate', (m) => this.manager.processor.process(m));
     }
 
     async start() {
-        this.manager
-            .registerDefaultTypes()
-            .registerCommands();
+        this.manager.registerCommands();
         this.events.start();
         this.database.start();
 
