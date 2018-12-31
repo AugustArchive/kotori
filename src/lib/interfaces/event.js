@@ -10,10 +10,19 @@ module.exports = class Event {
         this.event = info.event;
         this.emitter = info.emitter;
     }
+
+    /**
+     * Run the event
+     * 
+     * @param {any[]} args The arguments
+     */
+    async run(...args) {
+        throw new SyntaxError(`Event "${this.event}" needs a run(...args: any[]) to be runnable.`);
+    }
 };
 
 /**
  * @typedef {Object} EventInfo
- * @prop {"ready" | "disconnect" | "callCreate" | "callRing" | "callDelete" | "callUpdate" | "channelCreate" | "channelDelete" | "channelPinUpdate" | "channelRecipientAdd" | "channelRecepientRemove" | "channelUpdate" | "friendSuggestionCreate" | "friendSuggestionDelete" | "guildAvaliable" | "guildBanAdd" | "guildBanRemove" | "guildDelete" | "guildUnavaliable" | "guildCreate" | "guildEmojisUpdate" | "guildMemberAdd" | "guildMemberChunk" | "guildMemberRemove" | "guildMemberUpdate" | "guildRoleCreate" | "guildRoleDelete" | "guildRoleUpdate" | "guildUpdate" | "hello" | "messageCreate" | "messageDeleteBulk" | "messageReactionRemoveAll" | "messageDeleteBulk" | "messageReactionAdd" | "messageReactionRemove" | "messageUpdate" | "presenceUpdate" | "rawWS" | "unknown" | "relationshipAdd" | "relationshipRemove" | "relationshipUpdate" | "typingStart" | "unavaliableGuildCreate" | "userUpdate" | "voiceChannelJoin" | "voiceChannelLeave" | "voiceChannelSwitch" | "voiceStateUpdate" | "warn" | "debug" | "shardDisconnect" | "error" | "shardPreReady" | "connect" | "shardReady" | "shardResume" | "messageDelete"} event The event to run
+ * @prop {string} event The event to run
  * @prop {"client" | "commandManager" | "schedulerManager" | "database"} emitter The emitter to run from
  */

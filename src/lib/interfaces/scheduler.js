@@ -10,6 +10,10 @@ module.exports = class Scheduler {
         this.name = info.name;
         this.interval = info.interval;
     }
+
+    async run() {
+        throw new SyntaxError(`Scheduler "${this.name}" needs a run() to be runnable.`);
+    }
 };
 
 /**
