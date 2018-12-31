@@ -82,7 +82,7 @@ declare module '@maika.xyz/kotori' {
         public run(): Promised;
     }
     export class ISchema {
-        constructor(name: string, definitions: SchemaDefinition);
+        constructor(info: SchemaInfo);
 
         public name: string;
         public definitions: SchemaDefinition;
@@ -172,6 +172,10 @@ declare module '@maika.xyz/kotori' {
     export type SchedulerInfo = {
         name: string;
         interval: number;
+    };
+    export type SchemaInfo = {
+        name: string;
+        definitions: SchemaDefinition;
     };
     export type MessageFilter = (msg: Message) => boolean;
     export type IEmitter = "client" | "commandManager" | "schedulerManager" | "database";
