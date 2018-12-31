@@ -27,7 +27,7 @@ module.exports = class DatabaseFactory extends EventEmitter {
 
         /**
          * The schemas
-         * @type {Collection<import('../interfaces/schema')>}
+         * @type {Collection<string, import('../interfaces/schema')>}
          */
         this.schemas = new Collection();
 

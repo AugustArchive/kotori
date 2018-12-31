@@ -16,12 +16,12 @@ module.exports = class CommandManager extends EventEmitter {
         this.processor = new CommandProcessor(client);
 
         /**
-         * @type {Collection<Command>}
+         * @type {Collection<string, Command>}
          */
         this.commands = new Collection();
 
         /**
-         * @type {Collection<import('../interfaces/type')>}
+         * @type {Collection<string, import('../interfaces/type')>}
          */
         this.types = new Collection();
     }
@@ -35,12 +35,11 @@ module.exports = class CommandManager extends EventEmitter {
                 
                 files.forEach(f => {
                     try {
-                        const _Command = require(`${this.client.paths.commands}/${categories[i]}/${f}`);
-                        const command = new _Command(this.client);
-
-                        if (!(_Command instanceof Command))
+                        const command = require(`${this.client.paths.commands}/${categories[i]}/${f}`);
+                        if (!(command instanceof Command))
                             throw new SyntaxError("Command wasn't an instanceof Kotori.Command");
 
+                        const c = new command(this.client);
                         this.registerCommand(command);
                     } catch(ex) {
                         this.emit('command:error', ex);

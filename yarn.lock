@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@maika.xyz/eris-utils@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@maika.xyz/eris-utils/-/eris-utils-0.0.1.tgz#e35de8f0c2871aa5c12f1cadab7a25d283dac5a6"
-  integrity sha512-CWQRJC7VfHgfmLOqpwoSvUnmUS1LirKJ+mENfKjnqh1bstOObl76vvuWrCj8rcmkVYNw4cQ+UQHK6RK1aog62w==
+"@maika.xyz/eris-utils@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@maika.xyz/eris-utils/-/eris-utils-0.0.2.tgz#2761404b39cc255d379380f9dea5bc4dffc3d208"
+  integrity sha512-i64YB9YVoTCg7i1S+e5sVCnzUGJ3mQ5pdyfoQ5O46cTKiYxYoPEKfj7dp09dv+cJpnFIYpHeXUD/GmwYR+xBmg==
 
 async-limiter@~1.0.0:
   version "1.0.0"
