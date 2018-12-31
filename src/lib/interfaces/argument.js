@@ -1,5 +1,6 @@
 const { stripIndents } = require('common-tags');
 const MessageCollector = require('./collector');
+const ArgumentUnionType = require('../types/union');
 
 module.exports = class Argument {
     /**
@@ -251,7 +252,7 @@ module.exports = class Argument {
         let t = this.client.manager.types.get(type);
         if (t)
             return t;
-        t = new (require('./type')(this.client, type));
+        t = new ArgumentUnionType(this.client, t);
         this.client.manager.registerType(t);
         return t;
     }

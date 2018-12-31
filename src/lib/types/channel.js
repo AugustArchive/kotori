@@ -7,16 +7,13 @@ module.exports = class ChannelArgumentType extends ArgumentType {
 
     async validate(msg, arg, val) {
         const channel = await this.client.rest.getChannel(val, msg.guild);
-        return channel.name === val;
+        if (!channel)
+            return false;
+
+        return true;
     }
 
-    parse(msg, arg, val) {
-        const channel = msg.guild.channels.filter(s => s.name === val);
-        if (channel.size === 0)
-            return false;
-        if (channel.size === 1)
-            return channel[0];
-
-        return null;
+    async parse(msg, arg, val) {
+        return await this.client.rest.getChannel(val, msg.guild); 
     }
 };
