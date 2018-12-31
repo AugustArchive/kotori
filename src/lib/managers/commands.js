@@ -26,7 +26,7 @@ module.exports = class CommandManager extends EventEmitter {
         this.types = new Collection();
     }
 
-    async start() {
+    async registerCommands() {
         const categories = await readdirSync(this.client.paths.commands);
         for (let i = 0; i < categories.length; i++)
             readdir(`${this.client.paths.commands}/${categories[i]}`, (error, files) => {
@@ -46,6 +46,25 @@ module.exports = class CommandManager extends EventEmitter {
                     }
                 });
             });
+    }
+
+    /**
+     * Registers all "default" types
+     */
+    registerDefaultTypes() {
+        readdir('./types', (error, files) => {
+            if (error)
+                this.emit('types:error', error);
+
+            files.forEach(f => {
+                const Type = require(`../types/${f}`);
+                const type = new Type(this.client);
+
+                this.registerType(type);
+            });
+        });
+
+        return this;
     }
 
     /**

@@ -47,7 +47,6 @@ module.exports = class Command {
  * @typedef {Object} CommandInfo
  * @prop {string} command The command name
  * @prop {string} description The command description
- * @prop {string} [usage=''] The command usage
  * @prop {string} [category] The command category
  * @prop {string[]} [aliases=[]] The command aliases
  * @prop {ICommandChecks} [checks] The command checks

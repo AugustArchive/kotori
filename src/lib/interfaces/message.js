@@ -33,6 +33,15 @@ module.exports = class CommandMessage {
     }
 
     /**
+     * Gets the sender of the message
+     * 
+     * @returns {import('eris').User} The user that Eris cached OwO
+     */
+    get sender() {
+        return this.message.author;
+    }
+
+    /**
      * Provide usage for a command
      * 
      * @returns {string}

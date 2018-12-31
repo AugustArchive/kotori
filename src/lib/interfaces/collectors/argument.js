@@ -91,6 +91,6 @@ module.exports = class ArgumentCollector {
  * @typedef {Object} ArgumentCollectorInfo
  * @prop {Object} values The values
  * @prop {string} [cancelled] Why the argument was cancelled
- * @prop {import('eris').Message[]} results The results
+ * @prop {import('eris').Message[]} prompts The results
  * @prop {import('eris').Message[]} answers The answers
  */
