@@ -135,7 +135,6 @@ declare module '@maika.xyz/kotori' {
         public getUser(query: string): PromisedUser;
         public getGuild(query: string): PromisedGuild;
     }
-
     export type IClientOptions = {
         token: string;
         prefix: string;
@@ -145,6 +144,7 @@ declare module '@maika.xyz/kotori' {
         schemas: string;
         schedulers?: { enabled: boolean; path: string; };
         clientOptions?: ClientOptions;
+        dbURI: string;
     };
     export type MessageCollectorOptions = {
         channelID: string;
