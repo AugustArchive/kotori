@@ -31,8 +31,17 @@ module.exports = class CommandManager extends EventEmitter {
                 files.forEach(f => {
                     try {
                         const command = require(`${this.client.paths.commands}/${categories[i]}/${f}`);
-                        const c = new command(this.client);
-                        this.registerCommand(c);
+
+                        if (typeof command === 'function')
+                            command = new command(this.client);
+
+                        if (typeof command.default === 'function')
+                            command = new command.default(this.client);
+
+                        if (!(command instanceof Command))
+                            throw new SyntaxError(`Unable to register command; not an instance of Kotori.Command`);
+
+                        this.registerCommand(command);
                     } catch(ex) {
                         this.emit('command:error', ex);
                     }
@@ -47,10 +56,10 @@ module.exports = class CommandManager extends EventEmitter {
      * @returns {void} nOOOOOOOp
      */
     registerCommand(cmd) {
-        if (!cmd.checks.enabled)
-            this.emit('command:register:error', `Command ${cmd.command} wasn't able to be registered: Command is disabled.`);
-        if (this.commands.has(cmd))
-            this.emit('command:register:error', `Command ${cmd.command} was unable to be registered: Command is already in the Collection.`);
+        if (!command.checks.enabled)
+            this.emit('command:register:error', `Command ${cmd.command} wasn't able to be registered; Command is disabled.`);
+        if (this.commands.has(command.command))
+            this.emit('command:register:error', `Command ${cmd.command} was unable to be registered; Command is already in the Collection.`);
 
         this.commands.set(cmd.command, cmd);
         this.emit('command:registered', cmd);
