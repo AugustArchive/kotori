@@ -30,8 +30,16 @@ module.exports = class SchedulerManager extends EventEmitter {
             files.forEach(f => {
                 const scheduler = require(`${this.client.paths.schedulers}/${f}`);
 
-                const s = new scheduler(this.client);
-                this.registerScheduler(s);
+                if (typeof scheduler === 'function')
+                    scheduler = new scheduler(this.client);
+
+                if (typeof scheduler.default === 'function')
+                    scheduler = new scheduler.default(this.client);
+
+                if (!(scheduler instanceof Scheduler))
+                    throw new SyntaxError("Unable to register scheduler; not an instanceof Kotori.Scheduler");
+
+                this.registerScheduler(scheduler);
             });
         });
     }
@@ -43,8 +51,8 @@ module.exports = class SchedulerManager extends EventEmitter {
      * @returns {void} nOOOOOOOOOOOOOOOOOOOOOOOOp
      */
     registerScheduler(s) {
-        if (this.tasks.has(s))
-            this.emit('scheduler:register:error', `Scheduler ${s.name} wasn't able to be registered: Scheduler was already added to the Collection`);
+        if (this.tasks.has(s.name))
+            this.emit('scheduler:register:error', `Scheduler ${s.name} wasn't able to be registered; Scheduler was already added to the Collection`);
 
         this.tasks.set(s.name, s);
     }

@@ -1,7 +1,7 @@
 {
     "name": "@maika.xyz/kotori",
     "description": "The core bot of Maika",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "main": "src/index.js",
     "typings": "index.d.ts",
     "dependencies": {

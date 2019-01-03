@@ -1,5 +1,6 @@
 const { readdir } = require('fs');
 const EventProcessor = require('../processors/events');
+const Event = require('../interfaces/event');
 
 module.exports = class EventManager {
     /**
@@ -19,8 +20,17 @@ module.exports = class EventManager {
 
             files.forEach(f => {
                 const event = require(`${this.client.paths.events}/${f}`);
-                const e = new event(this.client);
-                this.processor.process(e);
+
+                if (typeof event === 'function')
+                    event = new event(this.client);
+
+                if (typeof event.default === 'function')
+                    event = new event.default(this.client);
+
+                if (!(event instanceof Event))
+                    throw new SyntaxError("Event was unable to be registered; not an instance of Kotori.Event");
+
+                this.processor.process(event);
             });
         });
     }

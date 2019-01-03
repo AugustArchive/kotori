@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { readdir } = require('fs');
 const { EventEmitter } = require('events');
 const { Collection } = require('@maika.xyz/eris-utils');
+const ISchema = require('../interfaces/schema');
 
 module.exports = class DatabaseFactory extends EventEmitter {
     /**
@@ -27,7 +28,7 @@ module.exports = class DatabaseFactory extends EventEmitter {
 
         /**
          * The schemas
-         * @type {Collection<string, import('../interfaces/schema')>}
+         * @type {Collection<string, ISchema>}
          */
         this.schemas = new Collection();
 
@@ -52,7 +53,7 @@ module.exports = class DatabaseFactory extends EventEmitter {
      * Gets a schema
      * 
      * @param {string} name The schema name
-     * @returns {import('../interfaces/schema')} The schema
+     * @returns {ISchema} The schema
      */
     getSchema(name) {
         return this.schemas.get(name);
@@ -98,11 +99,17 @@ module.exports = class DatabaseFactory extends EventEmitter {
                 this.emit('database:schemaError', error);
 
             files.forEach(f => {
-                const Schema = require(`${this.client.paths.schemas}/${f}`);
-                const schema = new Schema();
-                this.schemas.set(schema.name, schema);
-                // Adds the schema to the mongoose collection
-                schema.add();
+                const schema = require(`${this.client.paths.schemas}/${f}`);
+                
+                if (typeof schema === 'function')
+                    schema = new schema();
+
+                if (typeof schema.default === 'function')
+                    schema = new schema.default();
+                
+                if (!(schema instanceof ISchema))
+                    throw new SyntaxError("Unable to register schema; not an instance of Kotori.ISchema");   
+                    
                 this.emit('database:schemaRegistered', Schema);
             });
         });
