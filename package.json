@@ -5,7 +5,7 @@
     "main": "lib/index.js",
     "typings": "index.d.ts",
     "dependencies": {
-        "@augu/eris": "0.9.1",
+        "@augu/eris": "0.9.2",
         "@maika.xyz/eris-utils": "0.1.1",
         "@maika.xyz/hideri": "0.0.3",
         "common-tags": "1.8.0",
