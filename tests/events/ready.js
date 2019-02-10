@@ -1,14 +1,11 @@
-const Event = require('../../src/lib/interfaces/event');
+const { Event } = require('../../lib');
 
 module.exports = class ReadyEvent extends Event {
     constructor(client) {
-        super(client, {
-            event: 'ready',
-            emitter: 'client'
-        });
+        super(client, 'ready');
     }
 
-    run() {
-        console.log('[Mafuyu] Ready');
+    emit() {
+        this.client.logger.info(`  Logged in as ${this.client.user.username}#${this.client.user.discriminator}`);
     }
 };

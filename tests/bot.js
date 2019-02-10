@@ -1,14 +1,25 @@
-const { Client } = require('../src');
-const { token, prefix, dbURI } = require('./config');
-const path = require('path');
+const Kotori = require('../lib');
+const config = require('./config');
+const path   = require('path');
 
-new Client({
-    token,
-    prefix,
-    dbURI,
-    commands: { path: path.join(__dirname, 'commands') },
-    events: { path: path.join(__dirname, 'events') },
-    schedulers: { enabled: true, path: path.join(__dirname, 'schedulers') },
-    schemas: path.join(__dirname, 'schemas'),
-    owners: ['280158289667555328']
-}).start();
+const bot = Kotori.create({
+    token: config.token,
+    prefix: config.prefix,
+    owners: ['280158289667555328'],
+    commands: path.join(__dirname, 'commands'),
+    events: path.join(__dirname, 'events'),
+    schedulers: path.join(__dirname, 'schedulers'),
+    languages: path.join(__dirname, 'languages'),
+    dbURL: config.mongodb,
+    nodes: [
+        {
+            host: config.lavalink.host,
+            password: config.lavalink.password,
+            port: 2333
+        }
+    ],
+    maxShards: 'auto',
+    disableEveryone: true
+});
+
+bot.start();

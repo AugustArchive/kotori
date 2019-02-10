@@ -1,11 +1,12 @@
-const { Scheduler } = require('../../src');
+const { Scheduler } = require('../../lib'); // Replace "../../lib" with "@maika.xyz/kotori"
 
 module.exports = class TestScheduler extends Scheduler {
     constructor(client) {
-        super(client, { name: 'test', interval: 30 * 1000 });
+        super(client, { name: 'test', interval: 60 * 1000 });
     }
 
     run() {
-        console.log('Pong!');
+        const mypingiguess = Date.now();
+        this.client.logger.info(`  PONG ${Date.now() - mypingiguess}`);
     }
 };
