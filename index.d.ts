@@ -1,7 +1,7 @@
 import Eris from '@augu/eris';
 import { Collection } from '@maika.xyz/eris-utils';
 import Hideri from '@maika.xyz/hideri';
-import { Player } from 'lavalink';
+import { Player, Cluster } from 'lavalink';
 
 /** The heart and soul of Maika. */
 declare namespace Kotori {
@@ -141,54 +141,298 @@ declare namespace Kotori {
          * @returns If it is or not
          */
         public isPaused(): boolean;
+
+        /**
+         * Enqueues a track to the queue
+         * @param track The track to add
+         * @param unshift default: false
+         */
+        public enqueue(track: Kotori.LavalinkTrack, unshift?: boolean): void;
+
+        /**
+         * Pauses the song
+         */
+        public pause(): void;
+
+        /**
+         * Resumes the song
+         */
+        public resume(): void;
+
+        /**
+         * Sets the volume
+         * @param vol The volume from 1-150%
+         */
+        public setVolume(vol: number): void;
+
+        /**
+         * Stops the song
+         */
+        public stop(): void;
+
+        /**
+         * Fully destroy the Lavalink player
+         */
+        public destroy(): void;
+
+        /**
+         * Plays the song
+         * @param options Other options (not needed)
+         */
+        public play(options?: {
+            start: number;
+            end: number;
+        }): void;
     }
 
-    // Methods for AudioPlayer:
-    // isBusy(): boolean;
-    // isPaused(): boolean;
-    // enqueue(track: Kotori.LavalinkTrack, unshift?: boolean): void;
-    // pause(): void;
-    // resume(): void;
-    // setVolume(vol: number): void;
-    // stop(): void;
-    // destroy(): void;
-    // play(options?: { start: number; end: number; }): void;
-
     /** The client to initisate from */
-    export class Client {}
+    export class Client extends Eris.Client {
+        public manager: CommandManager;
+        public events: EventManager;
+        public schedulers: SchedulerManager;
+        public languages: LanguageManager;
+        public audio: AudioManager;
+        public lavalink: Cluster;
+        public emojis: { [x: string]: string; };
+        public logger: Hideri.Logger;
+        public prefix: string;
+        public owners: string[];
+        public rest: Kotori.RESTClient;
+
+        /**
+         * Construct a new Client instance
+         * @param options Addition options to add on to
+         */
+        constructor(options: Kotori.DefaultOptions);
+
+        /**
+         * Boots the bot up
+         */
+        public start(): Promise<void>;
+
+        /**
+         * Grabs a shard ID
+         * @param i The shard ID
+         * @returns The shard
+         */
+        public getShard(i: number): Eris.Shard;
+
+        /**
+         * Grabs a guild's settings
+         * @param id The id
+         * @returns The settings
+         */
+        public getGuildSettings(id: string): Promise<any>;
+
+        /**
+         * Grabs a user's settings
+         * @param id The ID
+         * @returns The settings
+         */
+        public getUserSettings(id: string): Promise<any>;
+    }
 
     /** The command interface */
-    export class Command {}
+    export class Command {
+        public client: Kotori.Client;
+        public command: string;
+        public description: string | Kotori.DescriptionSupplier;
+        public usage: string;
+        public category: string;
+        public aliases: string[];
+        public hidden: boolean;
+        public disabled: boolean;
+        public ownerOnly: boolean;
+        public guildOnly: boolean;
+        public nsfw: boolean;
+        public throttle: number;
+
+        /**
+         * Construct a new instance of the Command interface
+         * @param client The client
+         * @param options Additional options to add on
+         */
+        constructor(client: Kotori.Client, options: Kotori.CommandOptions);
+
+        /**
+         * Prettifies the command usage
+         */
+        public getFormat(): string;
+
+        /**
+         * Stringify the command instance
+         */
+        public toString(): string;
+
+        /**
+         * JSONify the command instance
+         */
+        public toJSON(): Eris.JSONCache;
+    }
 
     /** The command context */
-    export class CommandContext {}
+    export class CommandContext {
+        public client: Kotori.Client;
+        public message: Eris.Message;
+        public args: Kotori.ArgumentParser;
+        public collector: Kotori.MessageCollector;
+
+        /**
+         * Create a new instance of the command context interface
+         * @param client The client
+         * @param message The message
+         * @param args The array of arguments provided
+         */
+        constructor(client: Kotori.Client, message: Eris.Message, args: string[]);
+
+        /**
+         * Sends a message to the text channel
+         * @param content The content to send
+         * @returns The promised message that was sent
+         */
+        public send(content: string): Promise<Eris.Message>;
+
+        /**
+         * Sends an embed to the text channel
+         * @param content The embed to send
+         * @returns The promised message that was sent
+         */
+        public embed(content: Eris.Embed): Promise<Eris.Message>;
+    }
 
     /** The command manager to manage "command" related stuff */
-    export class CommandManager {}
+    export class CommandManager implements Manager {
+        public client: Kotori.Client;
+        public commands: Collection<Command>;
+        public processor: CommandProcessor;
+        public options: Kotori.ManagerOptions;
+
+        /**
+         * Construct a new instance of the Command manager
+         * @param client The client
+         * @param options The options
+         */
+        constructor(client: Kotori.Client, options: Kotori.ManagerOptions);
+        public start(): void;
+    }
 
     /** The command processor to process all commands */
-    export class CommandProcessor {}
+    export class CommandProcessor implements Processor {
+        public client: Kotori.Client;
+        public ratelimits: Collection<Collection<number>>;
+
+        /**
+         * Construct a new command processor
+         * @param client The client
+         */
+        constructor(client: Kotori.Client);
+        public process(msg: Eris.Message): void;
+    }
+
+    /** The database manager */
+    export class DatabaseManager {
+        public client: Kotori.Client;
+        public m: typeof import("mongoose");
+
+        /**
+         * Construct a new database manager interface
+         * @param client The client
+         * @param options The options to add on to
+         */
+        constructor(client: Kotori.Client, options: Kotori.DatabaseManagerOptions);
+
+        /**
+         * Starts the database
+         */
+        public connect(): Promise<void>;
+
+        /**
+         * Destroys the database
+         * @param reason The reason (default: `Killed Process CTRL+Q`)
+         * @returns The trace result
+         */
+        public destroy(reason?: string): Kotori.IDestroyResult;
+    }
 
     /** The event interface */
-    export class Event {}
+    export class Event {
+        public client: Kotori.Client;
+        public event: Kotori.Emittable;
+
+        /**
+         * Construct a new event interface
+         * @param client The client
+         * @param event The event to run
+         */
+        constructor(client: Kotori.Client, event: Kotori.Emittable);
+
+        /**
+         * Runs the event
+         * @param args Any arguments to run
+         */
+        public emit(...args: any[]): void;
+    }
 
     /** The event manager to manage all "event" releated stuff */
-    export class EventManager {}
+    export class EventManager implements Manager {
+        public client: Kotori.Client;
+
+        /**
+         * Construct a new event manager
+         * @param client The client instance
+         * @param options The options to add on to
+         */
+        constructor(client: Kotori.Client, options: Kotori.ManagerOptions);
+        public start(): void;
+    }
 
     /** The event processor to process all events */
-    export class EventProcessor {}
+    export class EventProcessor implements Processor {
+        public client: Kotori.Client;
+
+        /**
+         * Construct a new event processor
+         * @param client The client
+         */
+        constructor(client: Kotori.Client);
+        public process(event: Kotori.Event): void;
+    }
 
     /** The language interface */
-    export class Language {}
+    export class Language {
+        public client: Kotori.Client;
+        public translator: string;
+        public language: {
+            [x: string]: string | Kotori.LocaleSupplier;
+        };
+    }
 
     /** The language manager to manage all "language" related stuff */
     export class LanguageManager {}
+
+    /** The manager interface */
+    export interface Manager {
+        /** The client */
+        client: Kotori.Client;
+
+        /** The start function to process the manager's doings */
+        start(): void;
+    }
 
     /** The message collector for awaiting messages */
     export class MessageCollector {}
 
     /** Permission utils for Discord permissions */
     export class PermissionUtil {}
+
+    /** Processor interface */
+    export interface Processor {
+        /** The client instance */
+        client: Kotori.Client;
+        
+        /** Process the proccessor's proces */
+        process(...args: any[]): void;
+    }
 
     /** The REST client to grab Discord objects */
     export class RESTClient {}
@@ -240,6 +484,124 @@ declare namespace Kotori {
         /** The track information */
         track: Kotori.ILavalinkTrack;
     }
+
+    /** Type definition for type: `DefaultOptions` */
+    export type DefaultOptions = {
+        /** The discord bot token to authenicate to Discord */
+        token: string;
+
+        /** The command prefix */
+        prefix: string;
+
+        /** The path to all of the commands */
+        commands: string;
+
+        /** Path to all events */
+        events: string;
+
+        /** Path to all tasks (schedulers) */
+        schedulers: string;
+
+        /** Path to all locales */
+        languages: string;
+
+        /** Lavalink options */
+        lavalink: LavalinkOptions;
+
+        /** MongoDB authenication */
+        dbURL: string;
+
+        /** The owners of the bot */
+        owners: string[];
+    } & Eris.ClientOptions;
+
+    /** Type definition for type: `LavalinkOptions` */
+    export type LavalinkOptions = {
+        /** The host to connect from (default: `127.0.0.1`) */
+        host?: string;
+
+        /** The port to connect from the host (default: `2333`) */
+        port?: number;
+
+        /** The password to authenicate from (default: `youshallnotpass`) */
+        password?: string;
+    }
+
+    /** Type defintion for: `CommandOptions` */
+    export type CommandOptions = {
+        /** The command name */
+        command: string;
+
+        /** The command description */
+        description: string | Kotori.DescriptionSupplier;
+
+        /** The command usage (Use `<command>.getFormat()` to "prettify" the usage) */
+        usage?: string;
+
+        /** The command category (default: `Generic`) */
+        category?: string;
+
+        /** The command aliases (returns an empty array if no aliases were provided) */
+        aliases?: string[];
+
+        /** Whenever or not the command should be executed in a Discord guild */
+        guildOnly?: boolean;
+
+        /** Whenever or not the command should be executed by the owners */
+        ownerOnly?: boolean;
+
+        /** Whenever or not the command should be disabled */
+        disabled?: boolean;
+
+        /** Whenever or not the command should be hidden from the help command */
+        hidden?: boolean;
+
+        /** Whenever or not the command should be executed in an "NSFW" channel */
+        nsfw?: boolean;
+
+        /** The cooldown amount in seconds */
+        throttle?: number;
+    }
+
+    /** The description supplier as an function */
+    export type DescriptionSupplier = (client: Kotori.Client) => string;
+
+    /** Type defintion for: `ManagerOptions` */
+    export type ManagerOptions = { 
+        /** The path to add x from */
+        path: string; 
+    }
+
+    /** Type definition for: `Emittable` */
+    export type Emittable = "ready" | "disconnect" | "callCreate" | "callRing" | "callDelete" | 
+    "callUpdate" | "channelCreate" | "channelDelete" | "channelPinUpdate" | "channelRecipientAdd"  | 
+    "channelRecepientRemove" | "channelUpdate" | "friendSuggestionCreate" | "friendSuggestionDelete" | "guildAvaliable" | 
+    "guildBanAdd" | "guildBanRemove" | "guildDelete" | "guildUnavaliable" | 
+    "guildCreate" | "guildEmojisUpdate" | "guildMemberAdd" | "guildMemberChunk" | "guildMemberRemove" | "guildMemberUpdate" | 
+    "guildRoleCreate" | "guildRoleDelete" | "guildRoleUpdate" | "guildUpdate" | "hello" | "messageCreate" | "messageDeleteBulk" | 
+    "messageReactionRemoveAll" | "messageDeleteBulk" | "messageDelete" | "messageReactionAdd" | "messageReactionRemove" | "messageUpdate" | 
+    "presenceUpdate" | "rawWS" | "unknown" | "relationshipAdd" | "relationshipRemove" | 
+    "relationshipUpdate" | "typingStart" | "unavaliableGuildCreate" | "userUpdate" | "voiceChannelJoin" | "voiceChannelLeave" | 
+    "voiceChannelSwitch" | "voiceStateUpdate" | "warn" | "debug" | "shardDisconnect" | "error" | "shardPreReady" | "connect" | 
+    "shardReady" | "shardResume";
+
+    /** Type defintion for: `DatabaseManagerOptions` */
+    export type DatabaseManagerOptions = {
+        /** The url to authenicate with MongoDB */
+        url: string;
+    }
+
+    /** Type defitinion for: `IDestroyResult` */
+    export type IDestroyResult = {
+        /** If it was successful or not */
+        success: boolean;
+
+        /** If it failed to destroy */
+        error?: Error;
+    }
+
+    /** Type defition for: `LocaleSupplier` */
+    export type LocaleSupplier = (...args: any[]) => string;
 
     // #endregion Types
 }
