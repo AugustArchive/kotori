@@ -405,10 +405,40 @@ declare namespace Kotori {
         public language: {
             [x: string]: string | Kotori.LocaleSupplier;
         };
+        public completion: string;
+        public code: string;
+        public flag: string;
+        public full: string;
+
+        /**
+         * Construct a new language interface
+         * @param client The client
+         * @param options Additional options to add on
+         */
+        constructor(client: Kotori.Client, options: Kotori.LanguageOptions);
+
+        /**
+         * Translates the `term` and returns the string from the language
+         * @param term The term to get
+         * @param args Any additional arguments to add (if it's a function)
+         * @returns The string generated
+         */
+        public translate(term: string, ...args: any[]): string;
     }
 
     /** The language manager to manage all "language" related stuff */
-    export class LanguageManager {}
+    export class LanguageManager implements Manager {
+        public client: Kotori.Client;
+        public languages: Collection<Language>;
+
+        /**
+         * Construct a new language manager instance
+         * @param client The client
+         * @param options Additional contextial options
+         */
+        constructor(client: Kotori.Client, options: Kotori.ManagerOptions);
+        public start(): void;
+    }
 
     /** The manager interface */
     export interface Manager {
@@ -420,10 +450,61 @@ declare namespace Kotori {
     }
 
     /** The message collector for awaiting messages */
-    export class MessageCollector {}
+    export class MessageCollector {
+        public collectors: {
+            [x: string]: {
+                filter: Kotori.MessageFilter;
+                accept: (value?: Promise<Eris.Message> | PromiseLike<Eris.Message>) => void;
+            } 
+        };
+
+        /**
+         * Construct a new message collector instance
+         * @param client The client instance
+         */
+        constructor(client: Kotori.Client);
+
+        /**
+         * Verifies an awaited message
+         * @param msg The message
+         */
+        private verify(msg: Eris.Message): void;
+
+        /**
+         * Await an message
+         * @param filter The filter
+         * @param options Additional contextial options
+         * @returns The promised message
+         */
+        public awaitMessage(filter: Kotori.MessageFilter, options: Kotori.MessageCollectorOptions): Promise<Eris.Message>;
+    }
 
     /** Permission utils for Discord permissions */
-    export class PermissionUtil {}
+    export class PermissionUtil {
+        public prettified: { [x: string]: string; };
+
+        /**
+         * Resolves a permission bitfield
+         * @param permission The permission bitfield
+         * @returns The bitfield number
+         */
+        public static resolve(permission: Kotori.PermissionResolvable): number;
+
+        /**
+         * Utility to check permission bitfields for users
+         * @param member The member
+         * @param permission The permission
+         * @returns If they have it or not
+         */
+        public static hasPermission(member: Eris.Member, permission: Kotori.Permission): boolean;
+
+        /**
+         * Prettified permission bitfield
+         * @param permission The field
+         * @returns The prettified permission 
+         */
+        public static humanize(permission: Kotori.Permission): string;
+    }
 
     /** Processor interface */
     export interface Processor {
@@ -435,16 +516,85 @@ declare namespace Kotori {
     }
 
     /** The REST client to grab Discord objects */
-    export class RESTClient {}
+    export class RESTClient {
+        public client: Kotori.Client;
+
+        /**
+         * Construct a new instance of the REST client to grab Discord Objects
+         * @param client The client instance
+         */
+        constructor(client: Kotori.Client);
+
+        /**
+         * Grabs a discord "role"
+         * @param query The query
+         * @param guild The guild
+         * @returns The promised role
+         */
+        public getRole(query: string, guild: Eris.Guild): Promise<Eris.Role>;
+
+        /**
+         * Grabs a discord "user"
+         * @param query The query
+         * @returns The promised user
+         */
+        public getUser(query: string): Promise<Eris.User>;
+
+        /**
+         * Grabs a discord text/voice/category channel
+         * @param query The query
+         * @param guild The guild
+         * @returns The promised channel
+         */
+        public getChannel(query: string, guild: Eris.Guild): Promise<Eris.TextChannel | Eris.VoiceChannel | Eris.CategoryChannel>;
+
+        /**
+         * Grabs a discord guild
+         * @param query The query
+         * @returns The promised guild
+         */
+        public getGuild(query: string): Promise<Eris.Guild>;
+    }
 
     /** The scheduler interface */
-    export class Scheduler {}
+    export class Scheduler {
+        public client: Kotori.Client;
+        public name: string;
+        public interval: number;
+        public disabled: boolean;
+
+        /**
+         * Construct a new scheduler interface
+         * @param client The client
+         * @param options Additional contextial options
+         */
+        constructor(client: Kotori.Client, options: Kotori.SchedulerOptions);
+        public run(): void;
+    }
 
     /** The scheduler manager to manage all "task" related stuff */
-    export class SchedulerManager {}
+    export class SchedulerManager implements Manager {
+        public client: Kotori.Client;
+        public tasks: Collection<Kotori.Scheduler>;
+
+        /**
+         * Construct a new scheduler manager
+         * @param client The client
+         * @param options Additional contextial options
+         */
+        constructor(client: Kotori.Client, options: Kotori.ManagerOptions);
+        public start(): void;
+    }
 
     /** Other utilities */
-    export class Util {}
+    export class Util {
+        /**
+         * Checks if `x` is a function
+         * @param fn The function
+         * @returns A boolean if it is or not
+         */
+        public static isFunction(x: Function): boolean;
+    }
     // #endregion Classes
 
     // #region Types
@@ -602,6 +752,66 @@ declare namespace Kotori {
 
     /** Type defition for: `LocaleSupplier` */
     export type LocaleSupplier = (...args: any[]) => string;
+
+    /** Type defitntion for `LanguageOptions` */
+    export type LanguageOptions = {
+        /** The ISO code of the locale */
+        code: string;
+
+        /** The full name (examples: `English (United Kingdom)` `Japanaese`) */
+        full: string;
+
+        /** The emoji flag to add to the `LanguageManager.localeMap` array */
+        flag: string;
+
+        /** The number of completion that the locale is done */
+        completion: number;
+
+        /** The translator's user ID */
+        translator: string;
+
+        /** The language itself */
+        map: {
+            [x: string]: string | LocaleSupplier;
+        }
+    }
+
+    /** Type definiton for: `MessageFilter` */
+    export type MessageFilter = (msg: Eris.Message) => boolean;
+
+    /** Type definition for: `MessageCollectorOptions` */
+    export type MessageCollectorOptions = {
+        /** The channel ID */
+        channelID: string;
+
+        /** The user's ID */
+        userID: string;
+
+        /** Timeout number (default: `30`) */
+        timeout?: number;
+    }
+
+    /** Permission resolvable */
+    export type PermissionResolvable = string | number | number[];
+
+    /** Permission nodes */
+    export type Permission = "createInstantInvite" | "kickMembers" | "banMembers" | 
+    "administrator" | "manageChannels" | "manageGuild" | "addReactions" | "viewAuditLogs" | "voicePrioritySpeaker" | 
+    "readMessages" | "sendMessages" | "sendTTSMessages" | "manageMessages" | "embedLinks" | "attachFiles" | "readMessageHistory" | 
+    "mentionEveryone" | "externalEmojis" | "voiceConnect" | "voiceSpeak" | "voiceMuteMembers" | "voiceDeafenMembers"| 
+    "voiceUseVAD" | "changeNickname" | "manageNicknames" | "manageRoles" | "manageWebhooks" | "manageEmojis";
+
+    /** Type definiton for: `SchedulerOptions` */
+    export type SchedulerOptions = {
+        /** The scheduler name */
+        name: string;
+
+        /** Interval number */
+        interval: number;
+
+        /** If the scheduler should be disabled */
+        disabled?: boolean;
+    };
 
     // #endregion Types
 }
