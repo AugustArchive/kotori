@@ -17,11 +17,12 @@
   resolved "https://registry.yarnpkg.com/@maika.xyz/eris-utils/-/eris-utils-0.1.1.tgz#d22c97d2b0365cbb798f7d421666618d9d410e33"
   integrity sha512-d8oWDDkUFn6DtVPAhEEGGuq4/yFNt8fk0YvN+9XnTMXo0ZXy8pfMlfwkhP5lcHcc4s+G7Z5W5FveZHxvvnDKRA==
 
-"@maika.xyz/hideri@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@maika.xyz/hideri/-/hideri-0.0.3.tgz#bbbef19a3bfbcc633de11aa28fc4bd97c1207211"
-  integrity sha512-kBEXxPbU+59u6RsSezUvu+hzfOmI94mit5YqWBZlrMFKZf+XYXC374lCeZhGGSm1TzpIz2d4ptU8qwA13D+4jg==
+"@maika.xyz/hideri@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@maika.xyz/hideri/-/hideri-0.1.0.tgz#b39376e928193f39993312026a6952e39d9cf493"
+  integrity sha512-3tk3fMgtZ8RoJw5z2+63xbOAzsXFBXqz1iFi2rQtf6t2OMD3pT0fZyOq8xyJlqFLfOLfKfWsQQ0aWybLF9VsBQ==
   dependencies:
+    "@maika.xyz/eris-utils" "0.1.1"
     "@maika.xyz/miu" "0.1.0"
     chalk "2.4.2"
 
