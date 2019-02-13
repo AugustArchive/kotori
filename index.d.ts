@@ -192,6 +192,7 @@ declare namespace Kotori {
         public schedulers: SchedulerManager;
         public languages: LanguageManager;
         public audio: AudioManager;
+        public database: DatabaseManager;
         public lavalink: Cluster;
         public emojis: { [x: string]: string; };
         public logger: Hideri.Logger;
@@ -429,7 +430,7 @@ declare namespace Kotori {
     /** The language manager to manage all "language" related stuff */
     export class LanguageManager implements Manager {
         public client: Kotori.Client;
-        public languages: Collection<Language>;
+        public locales: Collection<Language>;
 
         /**
          * Construct a new language manager instance
