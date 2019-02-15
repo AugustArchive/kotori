@@ -299,6 +299,26 @@ declare namespace Kotori {
          * @returns The promised message that was sent
          */
         public embed(content: Eris.Embed): Promise<Eris.Message>;
+
+        /**
+         * Gets the user's settings
+         * @returns The settings
+         */
+        public getUserSettings(): Kotori.UserSettings;
+
+        /**
+         * Gets the guild's settings
+         * @returns The settings
+         */
+        public getGuildSettings(): Kotori.GuildSettings;
+
+        /**
+         * Translates the user's locale into a string
+         * @param term The term to get
+         * @param args Any additional contextial arguments to add
+         * @returns The locale translated
+         */
+        public translate(term: string, ...args: any[]): Promise<string>;
     }
 
     /** The command manager to manage "command" related stuff */
@@ -397,6 +417,16 @@ declare namespace Kotori {
          */
         constructor(client: Kotori.Client);
         public process(event: Kotori.Event): void;
+    }
+
+    /** Guild settings */
+    export class GuildSettings implements SettingsBase<IGuildSettings> {
+        public client: Kotori.Client;
+        public schema: IGuildSettings;
+        constructor(client: Kotori.Client);
+        public get(id: string): IGuildSettings;
+        public update(options: { id: string; doc: any; callback: (error: Error, data: IGuildSettings) => void; }): Promise<void>;
+        public delete(id: string): Promise<void>;
     }
 
     /** The language interface */
@@ -557,6 +587,19 @@ declare namespace Kotori {
         public getGuild(query: string): Promise<Eris.Guild>;
     }
 
+    /** Setting Base Interface */
+    export interface SettingsBase<U> {
+        client: Kotori.Client;
+        schema: U;
+        get(id: string): U;
+        update(options: {
+            id: string;
+            doc: any;
+            callback: (error: Error, data: U) => void;
+        }): Promise<void>;
+        delete(id: string): Promise<void>;
+    }
+
     /** The scheduler interface */
     export class Scheduler {
         public client: Kotori.Client;
@@ -585,6 +628,16 @@ declare namespace Kotori {
          */
         constructor(client: Kotori.Client, options: Kotori.ManagerOptions);
         public start(): void;
+    }
+
+    /** User settings */
+    export class UserSettings implements SettingsBase<IUserSettings> {
+        public client: Kotori.Client;
+        public schema: IUserSettings;
+        constructor(client: Kotori.Client);
+        public get(id: string): IUserSettings;
+        public update(options: { id: string; doc: any; callback: (error: Error, data: IUserSettings) => void; }): Promise<void>;
+        public delete(id: string): Promise<void>;
     }
 
     /** Other utilities */
@@ -751,6 +804,39 @@ declare namespace Kotori {
         error?: Error;
     }
 
+    /** Guild Settings */
+    export type IGuildSettings = {
+        guildID: string;
+        prefix: string;
+        reddit: {
+            enabled: boolean;
+            channelID: string;
+        };
+        starboard: {
+            enabled: boolean;
+            channelID: string;
+            emoji: string;
+            threshold: number;
+        };
+        modlog: {
+            enabled: boolean;
+            channelID: string;
+        };
+        suggestions: {
+            enabled: boolean;
+            channelID: string;
+            upvotes: { emoji: string; amount: number; }
+            downvotes: { emoji: string; amount: number; }
+        };
+        tags: {
+            userID: string;
+            content: string;
+        }[];
+        autoroles: string[];
+        assignable: string[];
+        blacklist: { is: boolean; reason: string; }
+    }
+
     /** Type defition for: `LocaleSupplier` */
     export type LocaleSupplier = (...args: any[]) => string;
 
@@ -813,6 +899,16 @@ declare namespace Kotori {
         /** If the scheduler should be disabled */
         disabled?: boolean;
     };
+
+    export type IUserSettings = {
+        userID: string;
+        locale: string;
+        coins: number;
+        profile: {
+            description: string;
+            badge: string;
+        }
+    }
 
     // #endregion Types
 }

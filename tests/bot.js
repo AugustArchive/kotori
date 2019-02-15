@@ -19,7 +19,10 @@ const bot = Kotori.create({
         }
     ],
     maxShards: 'auto',
-    disableEveryone: true
+    disableEveryone: true,
+    fileOptions: {
+        path: path.join(__dirname, 'tmp/build.log')
+    }
 });
 
 bot.start();

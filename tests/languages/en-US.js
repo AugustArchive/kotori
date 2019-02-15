@@ -3,7 +3,7 @@ const { Language } = require('../../lib');
 module.exports = class EnUSLanguage extends Language {
     constructor(client) {
         super(client, {
-            code: 'en_US',
+            code: 'en-US',
             full: 'English (United States)',
             flag: ':flag_us:',
             translator: '280158289667555328',
