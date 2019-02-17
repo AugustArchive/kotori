@@ -1,3 +1,8 @@
+# 0.2.2
+
+- **Fix command process**
+- **Change the embed color**
+
 # 0.2.1
 
 - **Removed `getGuildSettings()` & `getUserSettings()` with `CommandContext.guildSettings` and `CommandContext.userSettings`**
