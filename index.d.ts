@@ -56,6 +56,13 @@ declare namespace Kotori {
          * @returns The arguments but the first element removed
          */
         public shift(): string[];
+
+        /**
+         * Gets the length of the `index`'d argument
+         * @param index The index to check
+         * @returns The length
+         */
+        public length(index: number): number;
     }
 
     /** The audio manager for Maika */
@@ -217,20 +224,6 @@ declare namespace Kotori {
          * @returns The shard
          */
         public getShard(i: number): Eris.Shard;
-
-        /**
-         * Grabs a guild's settings
-         * @param id The id
-         * @returns The settings
-         */
-        public getGuildSettings(id: string): Promise<any>;
-
-        /**
-         * Grabs a user's settings
-         * @param id The ID
-         * @returns The settings
-         */
-        public getUserSettings(id: string): Promise<any>;
     }
 
     /** The command interface */
@@ -258,17 +251,7 @@ declare namespace Kotori {
         /**
          * Prettifies the command usage
          */
-        public getFormat(): string;
-
-        /**
-         * Stringify the command instance
-         */
-        public toString(): string;
-
-        /**
-         * JSONify the command instance
-         */
-        public toJSON(): Eris.JSONCache;
+        public getFormat(ctx: Kotori.CommandContext): string;
     }
 
     /** The command context */
@@ -277,6 +260,10 @@ declare namespace Kotori {
         public message: Eris.Message;
         public args: Kotori.ArgumentParser;
         public collector: Kotori.MessageCollector;
+        public guildSettings: Kotori.GuildSettings;
+        public userSettings: Kotori.UserSettings;
+        public guild: Eris.Guild;
+        public channel: Eris.TextableChannel;
 
         /**
          * Create a new instance of the command context interface
@@ -299,18 +286,6 @@ declare namespace Kotori {
          * @returns The promised message that was sent
          */
         public embed(content: Eris.Embed): Promise<Eris.Message>;
-
-        /**
-         * Gets the user's settings
-         * @returns The settings
-         */
-        public getUserSettings(): Kotori.UserSettings;
-
-        /**
-         * Gets the guild's settings
-         * @returns The settings
-         */
-        public getGuildSettings(): Kotori.GuildSettings;
 
         /**
          * Translates the user's locale into a string
@@ -858,7 +833,7 @@ declare namespace Kotori {
         translator: string;
 
         /** The language itself */
-        map: {
+        language: {
             [x: string]: string | LocaleSupplier;
         }
     }
