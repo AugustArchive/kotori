@@ -1,3 +1,7 @@
+# 0.2.4
+
+- **Update typings from v0.2.3**
+
 # 0.2.3
 
 - **Update dependency `mongoose` to 5.4.14 (#9)**

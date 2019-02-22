@@ -58,11 +58,12 @@ declare namespace Kotori {
         public shift(): string[];
 
         /**
-         * Gets the length of the `index`'d argument
-         * @param index The index to check
-         * @returns The length
+         * Checks the length of `index` if anything is assoiated
+         * with it
+         * @param index The index
+         * @returns a Boolean if it is or not
          */
-        public length(index: number): number;
+        public has(index: number): boolean;
     }
 
     /** The audio manager for Maika */
@@ -251,7 +252,7 @@ declare namespace Kotori {
         /**
          * Prettifies the command usage
          */
-        public getFormat(ctx: Kotori.CommandContext): string;
+        public format(ctx: Kotori.CommandContext): string;
     }
 
     /** The command context */
@@ -264,6 +265,7 @@ declare namespace Kotori {
         public userSettings: Kotori.UserSettings;
         public guild: Eris.Guild;
         public channel: Eris.TextableChannel;
+        public sender: Eris.User;
 
         /**
          * Create a new instance of the command context interface
@@ -294,6 +296,25 @@ declare namespace Kotori {
          * @returns The locale translated
          */
         public translate(term: string, ...args: any[]): Promise<string>;
+
+        /**
+         * Sends a codeblock to a Discord channel
+         * @param lang The language
+         * @param content The content to send
+         * @returns The promised message
+         */
+        public code(lang: string, content: string): Promise<Eris.Message>;
+
+        /**
+         * Shoots a message to a Discord user's DM channel
+         * @param content The content to send
+         * @param options Contextial options to add on
+         * @returns The promised message
+         */
+        public dm(content: string, options?: {
+            user: Eris.User;
+            embed?: Eris.Embed;
+        }): Promise<Eris.Message>;
     }
 
     /** The command manager to manage "command" related stuff */
@@ -560,6 +581,14 @@ declare namespace Kotori {
          * @returns The promised guild
          */
         public getGuild(query: string): Promise<Eris.Guild>;
+
+        /**
+         * Gets a Discord message
+         * @param channelID The channel ID
+         * @param messageID The message ID
+         * @returns The promised message
+         */
+        public getMessage(channelID: string, messageID: string): Promise<Eris.Message>;
     }
 
     /** Setting Base Interface */
