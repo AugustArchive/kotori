@@ -1,3 +1,13 @@
+# 0.2.3
+
+- **Update dependency `mongoose` to 5.4.14 (#9)**
+- **Add `command` property to the command context**
+- **Add more functionality to the argument parser**
+  - **Added `has(index: number): boolean`**
+  - **Removed `length`**
+  - **Added resolvers (channel, guild, role, messages, etc..)**
+- **Added `code` and `dm` properties to the command context (functions)**
+
 # 0.2.2
 
 - **Fix command process**
