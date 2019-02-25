@@ -130,10 +130,10 @@ kareem@2.3.0:
   resolved "https://registry.yarnpkg.com/kareem/-/kareem-2.3.0.tgz#ef33c42e9024dce511eeaf440cd684f3af1fc769"
   integrity sha512-6hHxsp9e6zQU8nXsP+02HGWXwTkOEw6IROhF2ZA28cYbUk4eJ6QbtZvdqZOdD9YPKghG3apk5eOCvs+tLl3lRg==
 
-lavalink@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/lavalink/-/lavalink-2.3.1.tgz#5dfb7eeaee3496be7f35f0537646bd1aa1a9100e"
-  integrity sha512-xAFp0QXtQCR0OVzXLdbO1OP2djR4yAv/QeTSEtw4ID+qJZ3I3/h5tBnv8bcegthLyiz3MIkJynu3AedYxE4R4A==
+lavalink@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/lavalink/-/lavalink-2.4.0.tgz#7b1d31c31853d0c8bcdf58be3d7f5e1cfcc6398b"
+  integrity sha512-hNuEDotMw9LsDnNCh8MJ8eQumrjmDy5KPPkGP+6X8kCVgJ7mhT3mzqRSEjuwCuav8MWASeL5jtfoUAqJdubZbA==
   dependencies:
     ws "^6.0.0"
 
