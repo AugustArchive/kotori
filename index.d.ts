@@ -1,7 +1,6 @@
 import Eris from '@augu/eris';
 import { Collection } from '@maika.xyz/eris-utils';
 import Hideri from '@maika.xyz/hideri';
-import { Player, Cluster } from 'lavalink';
 
 /** The heart and soul of Maika. */
 declare namespace Kotori {
@@ -66,147 +65,16 @@ declare namespace Kotori {
         public has(index: number): boolean;
     }
 
-    /** The audio manager for Maika */
-    export class AudioManager {
-        public client: Kotori.Client;
-        public players: Collection<AudioPlayer>;
-
-        /**
-         * Construct a new audio manager instance
-         * @param client The client instance
-         */
-        constructor(client: Kotori.Client);
-
-        /**
-         * Creates a player for the guild
-         * @param guild The guild
-         * @returns The player
-         */
-        public createPlayer(guild: Eris.Guild): AudioPlayer;
-
-        /**
-         * Gets the player from the guild
-         * @param guild The guild
-         * @returns The audio player
-         */
-        public getPlayer(guild: Eris.Guild): AudioPlayer;
-
-        /**
-         * If the `AudioManager` created an audio player for the guild
-         * @param guild The guild
-         * @returns A boolean if they have an audio player created
-         */
-        public hasPlayer(guild: Eris.Guild): boolean;
-
-        /**
-         * Destroys the audio player
-         * @param guild The guild
-         * @returns the player destroyed
-         */
-        public destroy(guild: Eris.Guild): void;
-    }
-
-    /** The audio player for Maika */
-    export class AudioPlayer {
-        public client: Kotori.Client;
-        public guild: Eris.Guild;
-        public queue: Kotori.LavalinkTrack[];
-        public repeat: boolean;
-
-        /**
-         * Constructs an new `AudioPlayer` instance
-         * @param client The client instance
-         * @param guild The guild that created this
-         */
-        constructor(client: Kotori.Client, guild: Eris.Guild);
-
-        /**
-         * Gets the Lavalink player
-         * @returns The lavalink player
-         */
-        public getPlayer(): Player;
-
-        /**
-         * Gets the current song
-         * @returns The track
-         */
-        public getCurrentSong(): Kotori.LavalinkTrack;
-
-        /**
-         * Checks if any audio is playing
-         * @returns If it is or not
-         */
-        public isPlaying(): boolean;
-
-        /**
-         * Checks if any audio is playing or the track is pauised
-         * @returns If it is or not
-         */
-        public isBusy(): boolean;
-
-        /**
-         * Checks if the track is paused
-         * @returns If it is or not
-         */
-        public isPaused(): boolean;
-
-        /**
-         * Enqueues a track to the queue
-         * @param track The track to add
-         * @param unshift default: false
-         */
-        public enqueue(track: Kotori.LavalinkTrack, unshift?: boolean): void;
-
-        /**
-         * Pauses the song
-         */
-        public pause(): void;
-
-        /**
-         * Resumes the song
-         */
-        public resume(): void;
-
-        /**
-         * Sets the volume
-         * @param vol The volume from 1-150%
-         */
-        public setVolume(vol: number): void;
-
-        /**
-         * Stops the song
-         */
-        public stop(): void;
-
-        /**
-         * Fully destroy the Lavalink player
-         */
-        public destroy(): void;
-
-        /**
-         * Plays the song
-         * @param options Other options (not needed)
-         */
-        public play(options?: {
-            start: number;
-            end: number;
-        }): void;
-    }
-
     /** The client to initisate from */
     export class Client extends Eris.Client {
         public manager: CommandManager;
         public events: EventManager;
         public schedulers: SchedulerManager;
-        public languages: LanguageManager;
-        public audio: AudioManager;
         public database: DatabaseManager;
-        public lavalink: Cluster;
         public emojis: { [x: string]: string; };
         public logger: Hideri.Logger;
         public prefix: string;
         public owners: string[];
-        public rest: Kotori.RESTClient;
 
         /**
          * Construct a new Client instance
@@ -253,6 +121,11 @@ declare namespace Kotori {
          * Prettifies the command usage
          */
         public format(ctx: Kotori.CommandContext): string;
+
+        /**
+         * Unloads the command
+         */
+        public unload(): void;
     }
 
     /** The command context */
@@ -423,48 +296,6 @@ declare namespace Kotori {
         public get(id: string): IGuildSettings;
         public update(options: { id: string; doc: any; callback: (error: Error, data: IGuildSettings) => void; }): Promise<void>;
         public delete(id: string): Promise<void>;
-    }
-
-    /** The language interface */
-    export class Language {
-        public client: Kotori.Client;
-        public translator: string;
-        public language: {
-            [x: string]: string | Kotori.LocaleSupplier;
-        };
-        public completion: string;
-        public code: string;
-        public flag: string;
-        public full: string;
-
-        /**
-         * Construct a new language interface
-         * @param client The client
-         * @param options Additional options to add on
-         */
-        constructor(client: Kotori.Client, options: Kotori.LanguageOptions);
-
-        /**
-         * Translates the `term` and returns the string from the language
-         * @param term The term to get
-         * @param args Any additional arguments to add (if it's a function)
-         * @returns The string generated
-         */
-        public translate(term: string, ...args: any[]): string;
-    }
-
-    /** The language manager to manage all "language" related stuff */
-    export class LanguageManager implements Manager {
-        public client: Kotori.Client;
-        public locales: Collection<Language>;
-
-        /**
-         * Construct a new language manager instance
-         * @param client The client
-         * @param options Additional contextial options
-         */
-        constructor(client: Kotori.Client, options: Kotori.ManagerOptions);
-        public start(): void;
     }
 
     /** The manager interface */
@@ -839,32 +670,6 @@ declare namespace Kotori {
         autoroles: string[];
         assignable: string[];
         blacklist: { is: boolean; reason: string; }
-    }
-
-    /** Type defition for: `LocaleSupplier` */
-    export type LocaleSupplier = (...args: any[]) => string;
-
-    /** Type defitntion for `LanguageOptions` */
-    export type LanguageOptions = {
-        /** The ISO code of the locale */
-        code: string;
-
-        /** The full name (examples: `English (United Kingdom)` `Japanaese`) */
-        full: string;
-
-        /** The emoji flag to add to the `LanguageManager.localeMap` array */
-        flag: string;
-
-        /** The number of completion that the locale is done */
-        completion: number;
-
-        /** The translator's user ID */
-        translator: string;
-
-        /** The language itself */
-        language: {
-            [x: string]: string | LocaleSupplier;
-        }
     }
 
     /** Type definiton for: `MessageFilter` */

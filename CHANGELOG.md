@@ -1,3 +1,13 @@
+# 0.3.0
+
+- **Make Maika a private bot**
+- **Replaces `getFormat()` with `format()`**
+- **Removed managers and interfaces**:
+  - Audio Player / Manager
+  - Language Manager
+- **Added methods `register` and `deregister` to the command manager**
+- **Added method `unload` to the command instance**
+
 # 0.2.4
 
 - **Update typings from v0.2.3**
